@@ -19,6 +19,7 @@ def call_api(text):
         print(response.text)
     response.raise_for_status()
     data = response.json()
+    Path("memory").mkdir(exist_ok=True)  # memory/ is gitignored, so a fresh clone doesn't have it
     Path("memory/lastresponse.json").write_text(json.dumps(data, indent=4))
 
     reply = ""

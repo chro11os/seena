@@ -63,7 +63,7 @@ seena/
   server.py
   core/json_format.py
   providers/gemini.py
-  memory/               (runtime data, ignored by git)
+  memory/               (runtime data, gitignored, local only)
   CLAUDE.md
   context/              (MILESTONE.md)
   frontend/
@@ -80,11 +80,6 @@ seena/
 #### Step 3: Drop the old CLI (the web server replaces it) -- SKIPPED, keeping for now
 - [ ] Delete `main.py`, `core/prompt.py`, `.vscode/launch.json` (only launches `main.py`).
 - [ ] Remove `clear_memory` from `core/json_format.py` (only `prompt.py` used it).
-
-#### Step 4: Runtime data out of git -- SKIPPED, keeping for now
-- [ ] Remove the `lastresponse.json` debug dump line from `providers/gemini.py`.
-- [ ] Add `memory/` to `.gitignore` and `git rm --cached memory/*.json`.
-- [ ] In `core/json_format.py`, create the folder if missing, before `.touch()`: `memory_directory.parent.mkdir(exist_ok=True)`.
 
 #### Step 6: Verify
 - [ ] `uv sync` then `uv run fastapi dev server.py` starts on :8000.
@@ -176,3 +171,7 @@ seena/
 ### 2026-11-17: Renamed to Seena (done by Claude)
 - Done: GitHub repo is now `chro11os/seena` (old URL redirects); `origin` points to it. `pyproject.toml` name, README title and the page `<title>` say Seena; `uv.lock` regenerated.
 - Done: local folder moved to `~/Documents/seena` (venv rebuilt). Not renamed: the frontend package name (`frontend`).
+
+### 2026-11-17: memory/ out of git (Plan step 4, done by Claude)
+- Done: `memory/` is in `.gitignore` and untracked (`git rm --cached`); local files kept. Older commits still contain `lastresponse.json` and `chatmemory.json.imported`.
+- Done: `providers/gemini.py` creates `memory/` before writing `lastresponse.json`, so a fresh clone works.

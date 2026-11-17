@@ -3,6 +3,8 @@
 .idea/
 __pycache__/
 cse/libcse.dylib
+# chat history and debug dumps stay local
+memory/
 # Logs
 logs
 *.log
