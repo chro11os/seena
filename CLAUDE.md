@@ -54,7 +54,7 @@ Goal: keep only what the FastAPI backend and the Vite + React frontend need to r
 #### Target layout
 
 ```
-chatbot-llm/
+seena/
   .gitignore
   .env                  (ignored)
   README.md
@@ -150,3 +150,29 @@ chatbot-llm/
 - Verified: `uv run python cse/test_engine.py` passes (round trip, 8 threads x 50 appends, torn tail, mid-file damage, clear, `kill -9` mid-append). A real `/api/chat` call returned usage and saved the turn. `bun run build` passes.
 - Not verified: power loss (the only true `fsync` test), memory leaks (`leaks`/ASan not run).
 - Left alone: `cse/main.cpp` (your uncommitted practice code) and `cse/get_userinput.cpp`; `cse/userinput` is a tracked binary.
+
+### 2026-11-13: Chat sessions (written by Claude)
+- Fixed: server wouldn't start on Linux because `cse/libcse.dylib` (gitignored build output) didn't exist. Rebuild with the README command on each new machine or after editing `engine.cpp`.
+- Done: each saved message carries a `session` id (`add_turn(..., session)`, CLI uses `"cli"`). `/api/chat` requires `session`.
+- Done: History column lists sessions (newest first, titled by the first message, with turn count); clicking one opens it in Chat; "New chat" starts a fresh id (`crypto.randomUUID()`). Messages saved before sessions show as "Older messages". Session buttons are disabled mid-request.
+- Not done: Gemini still gets only the newest message, so it doesn't remember earlier turns in a session.
+- Verified: `bun run build` + eslint pass; a real `/api/chat` call saved its turn with the session id. Not checked in the browser yet.
+
+### 2026-11-17: Run script (written by Claude)
+- Done: `./run.sh` starts backend (:8000) and frontend (:5173) together; Ctrl+C stops both. It rebuilds `cse/libcse.dylib` when missing or older than `engine.cpp`, and runs `bun install` if `node_modules` is missing.
+- Verified: both ports answered 200 and were freed after the script stopped.
+
+### 2026-11-17: Delete sessions (written by Claude)
+- Done: each History row has a delete button (shows on hover, asks to confirm). Deleting the open session starts a new chat.
+- How: `DELETE /api/sessions/{id}` appends a tombstone record `{"role": "deleted", "session": id}`; `read_history()` hides any session with a tombstone. The log stays append-only, so the deleted text is still in `chat.log` (would need compaction to really erase it). "Older messages" (no id) can be deleted as `imported`.
+- Verified: delete tests pass (temp log); `bun run build` + eslint pass; the button renders in the browser and the endpoint answers through the Vite proxy. Not clicked on real data.
+- Noticed: if the page loads while the window is 0px wide, both side columns stay at 0px until reload (`useState(() => window.innerWidth / 3)`).
+
+### 2026-11-17: pytest (written by Claude)
+- Done: `pytest` is a dev dependency. `uv run pytest` runs `core/test_history.py` (storage delete) and `core/test_api.py` (`DELETE /api/sessions/{id}` through FastAPI's `TestClient`). `core/conftest.py` points every test at its own temp log.
+- `cse/test_engine.py` stays a plain script, outside `testpaths` (it kills processes).
+- Verified: 3 pass; they fail when `delete_session` does nothing; the real `memory/chat.log` is unchanged after a run.
+
+### 2026-11-17: Renamed to Seena (done by Claude)
+- Done: GitHub repo is now `chro11os/seena` (old URL redirects); `origin` points to it. `pyproject.toml` name, README title and the page `<title>` say Seena; `uv.lock` regenerated.
+- Done: local folder moved to `~/Documents/seena` (venv rebuilt). Not renamed: the frontend package name (`frontend`).

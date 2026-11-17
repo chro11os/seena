@@ -1,8 +1,14 @@
-# chatbot-llm
+# Seena
 
 Chatbot: React frontend -> FastAPI backend -> Gemini, with history stored by a small C++ append-only log engine.
 
 ## Run
+
+```
+./run.sh   # builds the engine if needed, starts backend + frontend; Ctrl+C stops both
+```
+
+Or by hand:
 
 ```
 c++ -std=c++17 -O2 -Wall -shared -fPIC -o cse/libcse.dylib cse/engine.cpp -lz   # once, and after editing engine.cpp
@@ -12,8 +18,9 @@ cd frontend && bun install && bun run dev                                       
 
 Needs `GEMINI_API_KEY` in `.env`. CLI instead of the web UI: `uv run main.py`.
 
-## Test the storage engine
+## Tests
 
 ```
-uv run python cse/test_engine.py
+uv run pytest                     # history + API tests in core/, each on a temp log
+uv run python cse/test_engine.py  # storage engine (plain script)
 ```
