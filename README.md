@@ -5,6 +5,12 @@ Chatbot: React frontend -> FastAPI backend -> Gemini, with history stored by a s
 ## Run
 
 ```
+./run.sh   # builds the engine if needed, starts backend + frontend; Ctrl+C stops both
+```
+
+Or by hand:
+
+```
 c++ -std=c++17 -O2 -Wall -shared -fPIC -o cse/libcse.dylib cse/engine.cpp -lz   # once, and after editing engine.cpp
 uv run fastapi dev server.py                                                     # backend, :8000
 cd frontend && bun install && bun run dev                                        # frontend, :5173

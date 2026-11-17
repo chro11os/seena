@@ -157,3 +157,7 @@ chatbot-llm/
 - Done: History column lists sessions (newest first, titled by the first message, with turn count); clicking one opens it in Chat; "New chat" starts a fresh id (`crypto.randomUUID()`). Messages saved before sessions show as "Older messages". Session buttons are disabled mid-request.
 - Not done: Gemini still gets only the newest message, so it doesn't remember earlier turns in a session.
 - Verified: `bun run build` + eslint pass; a real `/api/chat` call saved its turn with the session id. Not checked in the browser yet.
+
+### 2026-11-17: Run script (written by Claude)
+- Done: `./run.sh` starts backend (:8000) and frontend (:5173) together; Ctrl+C stops both. It rebuilds `cse/libcse.dylib` when missing or older than `engine.cpp`, and runs `bun install` if `node_modules` is missing.
+- Verified: both ports answered 200 and were freed after the script stopped.
