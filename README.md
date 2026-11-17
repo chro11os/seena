@@ -18,8 +18,9 @@ cd frontend && bun install && bun run dev                                       
 
 Needs `GEMINI_API_KEY` in `.env`. CLI instead of the web UI: `uv run main.py`.
 
-## Test the storage engine
+## Tests
 
 ```
-uv run python cse/test_engine.py
+uv run pytest                     # history + API tests in core/, each on a temp log
+uv run python cse/test_engine.py  # storage engine (plain script)
 ```

@@ -8,3 +8,12 @@ dependencies = [
     "pydantic>=2.14.1",
     "python-dotenv>=1.2.4",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["core"]  # cse/test_engine.py is a plain script (kills processes); run it on its own
+pythonpath = ["."]    # so tests can `import server` and `from core import ...`

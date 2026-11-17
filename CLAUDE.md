@@ -165,5 +165,10 @@ chatbot-llm/
 ### 2026-11-17: Delete sessions (written by Claude)
 - Done: each History row has a delete button (shows on hover, asks to confirm). Deleting the open session starts a new chat.
 - How: `DELETE /api/sessions/{id}` appends a tombstone record `{"role": "deleted", "session": id}`; `read_history()` hides any session with a tombstone. The log stays append-only, so the deleted text is still in `chat.log` (would need compaction to really erase it). "Older messages" (no id) can be deleted as `imported`.
-- Verified: `uv run python core/test_history.py` passes (temp log); `bun run build` + eslint pass; the button renders in the browser and the endpoint answers through the Vite proxy. Not clicked on real data.
+- Verified: delete tests pass (temp log); `bun run build` + eslint pass; the button renders in the browser and the endpoint answers through the Vite proxy. Not clicked on real data.
 - Noticed: if the page loads while the window is 0px wide, both side columns stay at 0px until reload (`useState(() => window.innerWidth / 3)`).
+
+### 2026-11-17: pytest (written by Claude)
+- Done: `pytest` is a dev dependency. `uv run pytest` runs `core/test_history.py` (storage delete) and `core/test_api.py` (`DELETE /api/sessions/{id}` through FastAPI's `TestClient`). `core/conftest.py` points every test at its own temp log.
+- `cse/test_engine.py` stays a plain script, outside `testpaths` (it kills processes).
+- Verified: 3 pass; they fail when `delete_session` does nothing; the real `memory/chat.log` is unchanged after a run.
