@@ -92,6 +92,7 @@ seena/
 
 
 ### Later (ideas, not started)
+- Separate always-on voice assistant app (JARVIS-style; own name and voice, not Marvel's): wake word, speech-to-text (faster-whisper), natural TTS (Kokoro local, or Gemini TTS to try fast), agent loop with tool calls. Seena gets `personality.md` via Gemini's `system_instruction`.
 - Let `Button` / `TextBox` accept normal HTML props (`ComponentProps<'button'>`, `placeholder`, etc.).
 - Error boundary so a crash shows a message instead of a blank page.
 
