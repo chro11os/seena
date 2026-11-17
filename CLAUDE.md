@@ -54,7 +54,7 @@ Goal: keep only what the FastAPI backend and the Vite + React frontend need to r
 #### Target layout
 
 ```
-chatbot-llm/
+seena/
   .gitignore
   .env                  (ignored)
   README.md
@@ -172,3 +172,7 @@ chatbot-llm/
 - Done: `pytest` is a dev dependency. `uv run pytest` runs `core/test_history.py` (storage delete) and `core/test_api.py` (`DELETE /api/sessions/{id}` through FastAPI's `TestClient`). `core/conftest.py` points every test at its own temp log.
 - `cse/test_engine.py` stays a plain script, outside `testpaths` (it kills processes).
 - Verified: 3 pass; they fail when `delete_session` does nothing; the real `memory/chat.log` is unchanged after a run.
+
+### 2026-11-17: Renamed to Seena (done by Claude)
+- Done: GitHub repo is now `chro11os/seena` (old URL redirects); `origin` points to it. `pyproject.toml` name, README title and the page `<title>` say Seena; `uv.lock` regenerated.
+- Not renamed: the local folder (`~/Documents/chatbot-llm`) and the frontend package name (`frontend`).

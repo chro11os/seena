@@ -1,4 +1,4 @@
-# chatbot-llm
+# Seena
 
 Chatbot: React frontend -> FastAPI backend -> Gemini, with history stored by a small C++ append-only log engine.
 
