@@ -89,6 +89,14 @@ export default function App() {
         setMessages(msgs)
     }
 
+    async function remove(id: string, title: string) {
+        if (!confirm(`Delete "${title}"?`)) return
+        const res = await fetch(`/api/sessions/${encodeURIComponent(id)}`, { method: 'DELETE' })
+        if (!res.ok) return alert(`Delete failed: ${res.status}`)
+        if (id === session) open(crypto.randomUUID(), [])
+        loadHistory()
+    }
+
     return (
         <div className="flex h-screen">
             <Pet thinking={thinking} />
@@ -101,13 +109,23 @@ export default function App() {
                         New chat
                     </button>
                 </div>
-                {groupBySession(history).map(([id, msgs]) => (
-                    <button key={id} disabled={thinking} onClick={() => open(id, msgs)}
-                        className={`block w-full text-left px-4 py-2 text-sm truncate hover:bg-gray-800 disabled:opacity-50 ${id === session ? 'bg-gray-800' : ''}`}>
-                        {id === 'imported' ? 'Older messages' : msgs[0].text}
-                        <span className="text-gray-500"> · {msgs.length / 2}</span>
-                    </button>
-                ))}
+                {groupBySession(history).map(([id, msgs]) => {
+                    const title = id === 'imported' ? 'Older messages' : msgs[0].text
+                    return (
+                        <div key={id} className={`group flex hover:bg-gray-800 ${id === session ? 'bg-gray-800' : ''}`}>
+                            <button disabled={thinking} onClick={() => open(id, msgs)}
+                                className="flex-1 min-w-0 text-left px-4 py-2 text-sm truncate disabled:opacity-50">
+                                {title}
+                                <span className="text-gray-500"> · {msgs.length / 2}</span>
+                            </button>
+                            {/* hidden until hover, but still reachable with Tab */}
+                            <button disabled={thinking} onClick={() => remove(id, title)} aria-label={`Delete ${title}`}
+                                className="px-3 text-gray-500 hover:text-red-400 opacity-0 group-hover:opacity-100 focus:opacity-100 disabled:hidden">
+                                ×
+                            </button>
+                        </div>
+                    )
+                })}
             </section>
             <Handle onDrag={dx => setLeft(w => clamp(w + dx))} />
             <section className="flex-1 min-w-0 flex flex-col h-screen">

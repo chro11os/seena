@@ -161,3 +161,9 @@ chatbot-llm/
 ### 2026-11-17: Run script (written by Claude)
 - Done: `./run.sh` starts backend (:8000) and frontend (:5173) together; Ctrl+C stops both. It rebuilds `cse/libcse.dylib` when missing or older than `engine.cpp`, and runs `bun install` if `node_modules` is missing.
 - Verified: both ports answered 200 and were freed after the script stopped.
+
+### 2026-11-17: Delete sessions (written by Claude)
+- Done: each History row has a delete button (shows on hover, asks to confirm). Deleting the open session starts a new chat.
+- How: `DELETE /api/sessions/{id}` appends a tombstone record `{"role": "deleted", "session": id}`; `read_history()` hides any session with a tombstone. The log stays append-only, so the deleted text is still in `chat.log` (would need compaction to really erase it). "Older messages" (no id) can be deleted as `imported`.
+- Verified: `uv run python core/test_history.py` passes (temp log); `bun run build` + eslint pass; the button renders in the browser and the endpoint answers through the Vite proxy. Not clicked on real data.
+- Noticed: if the page loads while the window is 0px wide, both side columns stay at 0px until reload (`useState(() => window.innerWidth / 3)`).

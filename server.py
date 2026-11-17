@@ -2,7 +2,7 @@ import httpx
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from providers.gemini import call_api
-from core.json_format import add_turn, read_history
+from core.json_format import add_turn, delete_session, read_history
 
 app = FastAPI()
 
@@ -25,3 +25,8 @@ def chat(req: ChatRequest):
 @app.get("/api/history")
 def history():
     return read_history()
+
+@app.delete("/api/sessions/{session}")
+def delete(session: str):
+    delete_session(session)
+    return {"deleted": session}

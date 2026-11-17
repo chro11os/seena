@@ -78,8 +78,21 @@ def add_turn(user_text, model_text, session="cli"):
     ])
 
 
+# Messages saved before sessions existed have no id; the frontend calls that group "imported"
+def _session(m):
+    return m.get("session") or "imported"
+
+
+# ponytail: a tombstone only hides the session; its text stays in chat.log. Rewrite the log
+# without deleted sessions (compaction) if it must really be erased or the file grows too big.
+def delete_session(session):
+    _log().append([{"role": "deleted", "session": session}])
+
+
 def read_history():
-    return _log().read()
+    messages = _log().read()
+    deleted = {_session(m) for m in messages if m["role"] == "deleted"}
+    return [m for m in messages if _session(m) not in deleted]
 
 
 def clear_memory(userinput):
